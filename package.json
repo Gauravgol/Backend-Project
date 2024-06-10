@@ -3,11 +3,19 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type":"module",
+  "type": "module",
   "scripts": {
-    "dev": "nodmeon src/index.js",
-    "start":""
+    "dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js",
+    "start": ""
   },
   "author": "gaurav",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "prettier": "^3.3.1"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mongoose": "^8.4.1"
+  }
 }
