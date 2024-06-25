@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import {mongoose,Schema} from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt"
 
@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema(
 
         },
         coverImage: {
-            type: string
+            type: String
         },
         watchHistory: [
             {
@@ -48,9 +48,10 @@ const userSchema = new mongoose.Schema(
             type: String
         },
 
-        timestamps: true
+    
 
-    }
+    },
+    {  timestamps: true}
 
 )
 
