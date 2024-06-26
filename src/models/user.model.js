@@ -77,7 +77,7 @@ return jwt.sign(
     }
 )
 }
-userSchema.methods.genrateRefrehToken=function(){
+userSchema.methods.genrateRefreshToken=function(){
     return jwt.sign(
         {
             _id:this._id,
