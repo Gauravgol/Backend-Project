@@ -44,7 +44,7 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: [true, "Password is required"]
         },
-        refershToken: {
+        refreshToken: {
             type: String
         },
 
@@ -66,6 +66,8 @@ return await bcrypt.compare(password,this.password)
 }
 
 userSchema.methods.genrateAccessToken=function(){
+    console.log("Acess token",this._id)
+  
 return jwt.sign(
     {
         _id:this._id,
@@ -78,6 +80,7 @@ return jwt.sign(
 )
 }
 userSchema.methods.genrateRefreshToken=function(){
+    console.log("REfreh token",this._id)
     return jwt.sign(
         {
             _id:this._id,
