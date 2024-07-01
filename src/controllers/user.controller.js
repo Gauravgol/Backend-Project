@@ -279,8 +279,49 @@ const updatedCoverImage=await User.findByIdAndUpdate(req.user?._id,{
 return res.status(200).json(new ApiResponse(200,updatedCoverImage,"Cover Image updated sucessfull"))
 })
 
+const getUserChannelProfile=asyncHandler(async(req,res)=>{
+const {username}=req.params
+
+if(!username?.trim()){
+  throw new ApiError(400,"username is missing")
+}
+
+const channel=await User.aggregate([
+  {
+    $match:{username:username?.toLowerCase()}
+  },
+  {
+    $lookup:{
+      from:"subscription",
+      localField:"_id",
+      foreignField:"channel",
+      as:"subscribers"
+    }
+  },{
+    $lookup:{
+      rom:"subscription",
+      localField:"_id",
+      foreignField:"subscriber",
+      as:"subscribedTo"
+    }
+  },
+  {
+    $addFields:
+    {
+      subscriberCount:{  $size:"$subscribers" },
+      channelSubscribedToCount:{  $size:"$subscribedTo" }
+    }
+  }
+])
+
+
+
+})
+
+
+
 
 export { registerUser, loginUser,logoutUser,refreshAccessToken,
 
-  changeCurrentPassword,getCurrentUser,updateUserDetails,updateAvatar,updateUserCoverImage
+  changeCurrentPassword,getCurrentUser,updateUserDetails,updateAvatar,updateUserCoverImage,getUserChannelProfile
 }
