@@ -112,7 +112,7 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 
   return res.status(200)
-    .cookie("acecesToken", accessToken, options)
+    .cookie("accessToken", accessToken, options)
     .cookie("refreshToken", refreshToken, options)
     .json(new ApiResponse(200, {
       user: loggedInUser, accessToken, refreshToken
@@ -126,7 +126,7 @@ const logoutUser = asyncHandler(async (req, res) => {
     req.user._id,
     {
       $set: {
-        refreshToken: undefined
+        refreshToken: 1
       }
     },
     { new: true }
@@ -138,8 +138,8 @@ const logoutUser = asyncHandler(async (req, res) => {
   }
 
   return res.status(200)
-    .clearCookie("acecesToken", accessToken, options)
-    .clearCookie("refreshToken", refreshToken, options)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
     .json(new ApiResponse(200, {}, "user logged out"))
 
 

@@ -8,14 +8,16 @@ import { User } from "../models/user.model.js";
 export const verifyJWT=asyncHandler(async(req,res,next)=>{
 
   try {
-     const token= req.cookie?.accessToken || req.header("Authorization")?.replace("Bearer","")
+     const token= req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer","")
   
+     console.log("token",req.cookies.accessToken)
   
      if(!token){
       throw new ApiError(401,"Unauthorized user")
      }
   
      const decodedToken= jwt.verify(token,process.env.ACCESS_TOKEN_SECRET)
+     console.log("Decodede token",decodedToken)
   
      const user=await User.findById(decodedToken?._id).select("-password -refreshToken")
   
@@ -26,7 +28,7 @@ export const verifyJWT=asyncHandler(async(req,res,next)=>{
    req.user=user;
      next()
   } catch (error) {
-    throw new ApiError(400,"Invalid access token")
+    throw new ApiError(400,"Invalid Access token")
   }
 
 })
