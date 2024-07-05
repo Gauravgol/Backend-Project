@@ -148,12 +148,12 @@ const logoutUser = asyncHandler(async (req, res) => {
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
   const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
-
+console.log("Incoming",incomingRefreshToken)
   if (!incomingRefreshToken) {
     throw new ApiError(401, "Unauthorized request")
   }
   try {
-    const decodedToken = await jwt.verfiy(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET)
+    const decodedToken = await jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET)
 
     const user = await User.findById(decodedToken?._id)
 
@@ -206,7 +206,8 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
 })
 
 const getCurrentUser = asyncHandler(async (req, res) => {
-  return res.status(200).json(200, req.user, "Current user fetched")
+
+  return res.status(200).json(new ApiResponse(200, req.user, "Current user fetched"))
 })
 
 
@@ -345,51 +346,51 @@ return res.status(200).json(new ApiResponse(200,channel[0],"User channel data fe
 })
 
 
-const getWatchHistory=asyncHandler(async(req,res)=>{
-  const user=await User.aggregate([
+const getWatchHistory = asyncHandler(async (req, res) => {
+  const user = await User.aggregate([
     {
-      $match:{_id:new Mongoose.Types.ObjectId(req.user._id)}
+      $match: { _id: new mongoose.Types.ObjectId(req.user._id) }
     },
     {
-      $lookup:{
-        from:"videos",
-        locaField:"watchHistory",
-        foreignField:"_id",
-        as:"watchHistroy",
-        pipeline:[
+      $lookup: {
+        from: "videos",
+        localField: "watchHistory",
+        foreignField: "_id",
+        as: "watchHistory",
+        pipeline: [
           {
-            $lookup:{
-              from:"users",
-              localField:'owner',
-              foreignField:"_id",
-              as:"owner",
-              pipeline:[
+            $lookup: {
+              from: "users",
+              localField: 'owner',
+              foreignField: "_id",
+              as: "owner",
+              pipeline: [
                 {
-                  $project:{
-                    fullName:1,
-                    username:1,
-                    avatar:1
+                  $project: {
+                    fullName: 1,
+                    username: 1,
+                    avatar: 1
                   }
                 }
               ]
             }
-          },{
-            $addFields:{
-              owner:{
-                $first:"$owner"
+          },
+          {
+            $addFields: {
+              owner: {
+                $first: "$owner"
               }
             }
           }
         ]
       }
     }
-  ])
+  ]);
 
   return res.status(200).json(
-    new ApiResponse(200,user[0].watchHistory),
-    "Watch History Fetched Successfully"
-  )
-})
+    new ApiResponse(200, user[0].watchHistory, "Watch History Fetched Successfully")
+  );
+});
 
 export {
   registerUser, loginUser, logoutUser, refreshAccessToken,
