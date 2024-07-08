@@ -10,8 +10,9 @@ const genrateAccessAndRefreshTokens = async (userID) => {
   try {
     const user = await User.findById(userID)
     const refreshToken = user.genrateRefreshToken()
-    console.log(refreshToken)
+    console.log("Refresh Token", refreshToken)
     const accessToken = user.genrateAccessToken()
+    console.log("Access Token", accessToken)
 
     user.refreshToken = refreshToken
 
@@ -148,7 +149,7 @@ const logoutUser = asyncHandler(async (req, res) => {
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
   const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
-console.log("Incoming",incomingRefreshToken)
+  console.log("Incoming", incomingRefreshToken)
   if (!incomingRefreshToken) {
     throw new ApiError(401, "Unauthorized request")
   }
@@ -321,27 +322,29 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
         }
       }
     },
-   { $project:{
-      fullName:1,
-      username:1,
-      subscriberCount:1,
-      channelSubscribedToCount:1,
-      isSubscribed:1,
-      avatar:1,
-      coverImage:1,
-      email:1,
+    {
+      $project: {
+        fullName: 1,
+        username: 1,
+        subscriberCount: 1,
+        channelSubscribedToCount: 1,
+        isSubscribed: 1,
+        avatar: 1,
+        coverImage: 1,
+        email: 1,
 
 
-    }}
+      }
+    }
   ])
 
-console.log("Channel",channel)
+  console.log("Channel", channel)
 
-if(!channel?.length){
-  throw new ApiError(404,"Channel does not exists")
-}
+  if (!channel?.length) {
+    throw new ApiError(404, "Channel does not exists")
+  }
 
-return res.status(200).json(new ApiResponse(200,channel[0],"User channel data fetched successfully"))
+  return res.status(200).json(new ApiResponse(200, channel[0], "User channel data fetched successfully"))
 
 })
 
@@ -395,5 +398,5 @@ const getWatchHistory = asyncHandler(async (req, res) => {
 export {
   registerUser, loginUser, logoutUser, refreshAccessToken,
 
-  changeCurrentPassword, getCurrentUser, updateUserDetails, updateAvatar, updateUserCoverImage, getUserChannelProfile,getWatchHistory
+  changeCurrentPassword, getCurrentUser, updateUserDetails, updateAvatar, updateUserCoverImage, getUserChannelProfile, getWatchHistory
 }
