@@ -15,6 +15,7 @@ const getAllVideos = asyncHandler(async (req, res) => {
 
 const publishAVideo = asyncHandler(async (req, res) => {
     const { title, description } = req.body
+    const userId = req.user._id;
     // TODO: get video, upload to cloudinary, create video
 
     if ([title, description].some((data) => data?.trim() === '')) {
@@ -45,7 +46,8 @@ const publishAVideo = asyncHandler(async (req, res) => {
         thumbnail: thumbnail?.url || "",
         title: title,
         description: description,
-        duration: video?.duration || 10
+        duration: video?.duration || 10,
+        owner: userId
 
     })
     if (!videoData) {
